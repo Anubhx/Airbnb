@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget{
               //   right: 0.0,
               //   child: PropertyTypeList()
               //   ),
-              
+
             ],
           ) ,
         ),
@@ -30,5 +30,5 @@ class HomeScreen extends StatelessWidget{
       body: Container(),
     );
   }
-// time -- 6:21
+// time -- 7:18
 }
