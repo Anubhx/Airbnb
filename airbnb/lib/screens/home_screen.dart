@@ -11,7 +11,22 @@ class HomeScreen extends StatelessWidget{
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        toolbarHeight:128 ,
+        flexibleSpace: Container(
+          child: Stack(
+            children: [
+              // const Positioned(
+              //   bottom: 0.0,
+              //   left: 0.0,
+              //   right: 0.0,
+              //   child: PropertyTypeList()
+              //   ),
+              
+            ],
+          ) ,
+        ),
+      ),
       body: Container(),
     );
   }
