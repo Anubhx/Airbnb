@@ -11,6 +11,13 @@ const Layout = () => {
         tabBarLabel : 'Explore'
     }}
     />
+    <Tabs.Screen
+        name="whishlists"
+        options={{
+          tabBarLabel: 'Wishlists',
+        }}
+      />
+      
   </Tabs>;
   
 }
