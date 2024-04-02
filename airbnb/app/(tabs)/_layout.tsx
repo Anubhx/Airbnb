@@ -1,30 +1,3 @@
-<<<<<<< HEAD
-import { View, Text } from 'react-native'
-import React from 'react'
-import { Tabs } from 'expo-router'
-import Colors from '@/constants/Colors';
-
-const Layout = () => {
-  return  <Tabs screenOptions={{
-    tabBarActiveTintColor : Colors.primary,
-  }}>
-    <Tabs.Screen name="index" options={{
-        tabBarLabel : 'Explore'
-    }}
-    />
-    <Tabs.Screen
-        name="whishlists"
-        options={{
-          tabBarLabel: 'Wishlists',
-        }}
-      />
-      
-  </Tabs>;
-  
-}
-
-export default Layout
-=======
 import React from "react";
 import { Tabs } from "expo-router";
 import Colors from "@/constants/Colors";
@@ -96,4 +69,3 @@ const Layout = () => {
 };
 
 export default Layout;
->>>>>>> 079e17e440d1bb6729034926ebe65c11389dd227
