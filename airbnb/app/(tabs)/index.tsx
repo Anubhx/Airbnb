@@ -1,13 +1,17 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import React from "react";
-import { Link } from "expo-router";
+import { Stack } from "expo-router";
+import ExploreHeader from "@/components/ExploreHeader";
 
 const index = () => {
   return (
-    <View>
-      <Link href={"/(modals)/login"}>Login</Link>
-      <Link href={"/(modals)/booking"}></Link>
-      <Link href={"/listing/1337"}>Listing details</Link>
+    <View style={{ flex: 1 }}>
+      <Stack.Screen
+        options={{
+          header: () => <ExploreHeader />,
+        }}
+      />
+      {/* <Listings /> */}
     </View>
   );
 };
