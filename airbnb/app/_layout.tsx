@@ -1,12 +1,33 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import { Stack, useRouter } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import { TouchableOpacity } from "react-native";
+import { useFonts } from 'expo-font';
+import { SplashScreen, Stack, useRouter } from 'expo-router';
+import { useEffect } from 'react';
+import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import * as SecureStore from 'expo-secure-store';
+import { Ionicons } from '@expo/vector-icons';
+import Colors from '@/constants/Colors';
+import { TouchableOpacity } from 'react-native';
 // CLERK KEY 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+//key 
+//pk_test_Y2xvc2Utc2hhZC02Mi5jbGVyay5hY2NvdW50cy5kZXYk
+
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      return SecureStore.getItemAsync(key);
+    } catch (err) {
+      return null;
+    }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      return;
+    }
+  },
+};
+
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -43,11 +64,21 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return  <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY!} tokenCache={tokenCache}>
+            <RootLayoutNav />
+          </ClerkProvider>;
 }
 
 function RootLayoutNav() {
+  const { isLoaded, isSignedIn } = useAuth()
   const router = useRouter();
+  
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push('/(modals)/login');
+    }
+  }, [isLoaded]);
+
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
