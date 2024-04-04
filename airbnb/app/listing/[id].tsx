@@ -1,6 +1,11 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, Share } from 'react-native';
+import { View, 
+  Text,
+   StyleSheet, 
+  Image,
+  Dimensions, 
+  TouchableOpacity, Share } from 'react-native';
 import listingsData from '@/assets/data/airbnb-listings.json';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
@@ -230,7 +235,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     marginTop: 10,
-    fontFamily: 'mon',
+    fontFamily: 'mon-b',
   },
 });
 
