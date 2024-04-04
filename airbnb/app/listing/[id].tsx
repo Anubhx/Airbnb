@@ -94,7 +94,7 @@ const DetailsPage = () => {
       <Animated.ScrollView
         contentContainerStyle={{ paddingBottom: 100 }}
         ref={scrollRef}
-        scrollEventThrottle={16}>
+        scrollEventThrottle={20}>
         <Animated.Image
           source={{ uri: listing.xl_picture_url }}
           style={[styles.image, imageAnimatedStyle]}
