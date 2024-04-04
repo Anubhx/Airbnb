@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 8,
+    marginHorizontal: 10, // Add horizontal margin for gap
   },
   categoriesBtnActive: {
     flex: 1,
