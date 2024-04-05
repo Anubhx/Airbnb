@@ -34,7 +34,8 @@
     "react-native-web": "~0.19.6",
     "expo-haptics": "~12.8.1",
     "react-native-reanimated": "~3.6.2",
-    "react-native-gesture-handler": "~2.14.0"
+    "react-native-gesture-handler": "~2.14.0",
+    "react-native-maps": "1.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { Stack } from "expo-router";
 import ExploreHeader from "@/components/ExploreHeader";
 import Listings from "@/components/Listings";
+import ListingsMap from "@/components/ListingsMaps"; // Import the ListingsMap component
 import listingsData from "@/assets/data/airbnb-listings.json";
 const page = () => {
   const items = useMemo(() => listingsData as any, []);
@@ -19,7 +20,8 @@ const page = () => {
           header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
         }}
       />
-      <Listings listings={items} category={category} /> 
+      {/* <Listings listings={items} category={category} />  */}
+      <ListingsMap /> {/* Add the ListingsMap component */}
     </View>
   );
 };
