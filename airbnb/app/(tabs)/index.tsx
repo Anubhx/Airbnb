@@ -5,6 +5,8 @@ import ExploreHeader from "@/components/ExploreHeader";
 import Listings from "@/components/Listings";
 import ListingsMap from "@/components/ListingsMaps"; // Import the ListingsMap component
 import listingsData from "@/assets/data/airbnb-listings.json";
+import listingsDataGeo from '@/assets/data/airbnb-listings.geo.json';
+
 const page = () => {
   const items = useMemo(() => listingsData as any, []);
   const [category, setCategory] = useState<string>('Tiny homes');
@@ -21,7 +23,7 @@ const page = () => {
         }}
       />
       {/* <Listings listings={items} category={category} />  */}
-      <ListingsMap /> {/* Add the ListingsMap component */}
+      <ListingsMap  listings ={listingsDataGeo}/> {/* Add the ListingsMap component */}
     </View>
   );
 };
