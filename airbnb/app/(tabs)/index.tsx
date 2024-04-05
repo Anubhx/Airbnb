@@ -6,6 +6,7 @@ import Listings from "@/components/Listings";
 import ListingsMap from "@/components/ListingsMaps"; // Import the ListingsMap component
 import listingsData from "@/assets/data/airbnb-listings.json";
 import listingsDataGeo from '@/assets/data/airbnb-listings.geo.json';
+import ListingsMaps from "@/components/ListingsMaps";
 
 const page = () => {
   const items = useMemo(() => listingsData as any, []);
@@ -23,7 +24,8 @@ const page = () => {
         }}
       />
       {/* <Listings listings={items} category={category} />  */}
-      <ListingsMap  listings ={listingsDataGeo}/> {/* Add the ListingsMap component */}
+      <ListingsMaps listings={listingsDataGeo} />
+      {/* <ListingsMap  listings ={listingsDataGeo}/> Add the ListingsMap component */}
     </View>
   );
 };
