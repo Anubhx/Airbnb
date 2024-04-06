@@ -1,134 +1,98 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import React from "react";
-import { useOAuth } from '@clerk/clerk-expo';
-import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
-import { defaultStyles } from '@/constants/Styles'
-// For StyleSheet
-import { StyleSheet } from "react-native";
-import type { StyleSheet as SS } from "react-native";
-import Colors from "@/constants/Colors";;
-import { useRouter } from 'expo-router';
+import { useSignIn } from "@clerk/clerk-expo";
+import { Link } from "expo-router";
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Button,
+  Pressable,
+  Text,
+  Alert,
+} from "react-native";
+import Spinner from "react-native-loading-spinner-overlay";
 
+const Login = () => {
+  const { signIn, setActive, isLoaded } = useSignIn();
 
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-import { Ionicons } from '@expo/vector-icons';
-
-enum Strategy {
-  Google = 'oauth_google',
-  Github = 'oauth_github',
-  Facebook = 'oauth_facebook',
-}
-
-const page = () => {
-  useWarmUpBrowser();
-
-  const router = useRouter();
-  const { startOAuthFlow: googleAuth } = useOAuth({ strategy: 'oauth_google' });
-  const { startOAuthFlow: githubAuth } = useOAuth({ strategy: 'oauth_github' });
-  const { startOAuthFlow: facebookAuth } = useOAuth({ strategy: 'oauth_facebook' });
-
-  const onSelectAuth = async (strategy: Strategy) => {
-    const selectedAuth = {
-      [Strategy.Google]: googleAuth,
-      [Strategy.Github]: githubAuth,
-      [Strategy.Facebook]: facebookAuth,
-    }[strategy];
-
+  const onSignInPress = async () => {
+    if (!isLoaded) {
+      return;
+    }
+    setLoading(true);
     try {
-      const { createdSessionId, setActive } = await selectedAuth();
+      const completeSignIn = await signIn.create({
+        identifier: emailAddress,
+        password,
+      });
 
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId });
-        router.back();
-      }
-    } catch (err) {
-      console.error('OAuth error', err);
+      // This indicates the user is signed in
+      await setActive({ session: completeSignIn.createdSessionId });
+    } catch (err: any) {
+      alert(err.errors[0].message);
+    } finally {
+      setLoading(false);
     }
   };
 
-
   return (
-    <View style= {styles.container}>
-      <TextInput autoCapitalize='none' placeholder='Email' style= {[defaultStyles.inputField, {marginBottom: 30} ]}/>
-      <TouchableOpacity style= {defaultStyles.btn}>
-        <Text style={ defaultStyles.btnText}>Continue</Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <Spinner visible={loading} />
 
+      <TextInput
+        autoCapitalize="none"
+        placeholder="simon@galaxies.dev"
+        value={emailAddress}
+        onChangeText={setEmailAddress}
+        style={styles.inputField}
+      />
+      <TextInput
+        placeholder="password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        style={styles.inputField}
+      />
 
-       <View style={styles.seperatorView}>
-        <View
-          style={{
-            flex: 1,
-            borderBottomColor: 'black',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-          }}
-        />
-        <Text style={styles.seperator}>or</Text>
-        <View
-          style={{
-            flex: 1,
-            borderBottomColor: 'black',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-          }}
-        />
-      </View>
+      <Button onPress={onSignInPress} title="Login" color={"#6c47ff"}></Button>
 
-      <View style={{ gap: 20 }}>
-        <TouchableOpacity style={styles.btnOutline}>
-          <Ionicons name="mail-outline" size={24} style={defaultStyles.btnIcon} />
-          <Text style={styles.btnOutlineText}>Continue with Phone</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.btnOutline} onPress={() => onSelectAuth(Strategy.Github)}>
-          <Ionicons name="logo-github" size={24} style={defaultStyles.btnIcon} />
-          <Text style={styles.btnOutlineText}>Continue with Github</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.btnOutline} onPress={() => onSelectAuth(Strategy.Google)}>
-          <Ionicons name="logo-google" size={24} style={defaultStyles.btnIcon} />
-          <Text style={styles.btnOutlineText}>Continue with Google</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.btnOutline} onPress={() => onSelectAuth(Strategy.Facebook)}>
-          <Ionicons name="logo-facebook" size={24} style={defaultStyles.btnIcon} />
-          <Text style={styles.btnOutlineText}>Continue with Facebook</Text>
-        </TouchableOpacity>
-      </View>
+      <Link href="/reset" asChild>
+        <Pressable style={styles.button}>
+          <Text>Forgot password?</Text>
+        </Pressable>
+      </Link>
+      <Link href="/register" asChild>
+        <Pressable style={styles.button}>
+          <Text>Create Account</Text>
+        </Pressable>
+      </Link>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
-    flex:1 , 
-    backgroundColor : '#fff',
-    padding: 26
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
   },
-  seperatorView: {
-    flexDirection: 'row',
-    gap: 10,
-    alignItems: 'center',
-    marginVertical: 30,
-  },
-  seperator: {
-    fontFamily: 'mon-sb',
-    color: Colors.grey,
-    fontSize: 16,
-  },
-  btnOutline: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: Colors.grey,
+  inputField: {
+    marginVertical: 4,
     height: 50,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "#6c47ff",
+    borderRadius: 4,
+    padding: 10,
+    backgroundColor: "#fff",
   },
-  btnOutlineText: {
-    color: '#000',
-    fontSize: 16,
-    fontFamily: 'mon-sb',
+  button: {
+    margin: 8,
+    alignItems: "center",
   },
-})
-export default page;
+});
+
+export default Login;
