@@ -1,21 +1,16 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { Marker } from 'react-native-maps';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import {  StyleSheet,  TouchableOpacity } from 'react-native';
-import { memo, useEffect, useRef } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React, { memo, useEffect, useRef } from 'react';
 import { defaultStyles } from '@/constants/Styles';
-import { ListingGeo } from '@/interfaces/listingGeo';
-import { router } from 'expo-router';
-
+import { Marker } from 'react-native-maps';
+import MapView from 'react-native-map-clustering';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import Colors from '@/constants/Colors';
+import * as Location from 'expo-location';
 
 interface Props {
-    listings: any;
-
+  listings: any;
 }
-const onMarkerSelected = (event: any) => {
-  router.push(`/listing/${event.properties.id}`);
-};
 
 const INITIAL_REGION = {
   latitude: 37.33,
@@ -24,75 +19,138 @@ const INITIAL_REGION = {
   longitudeDelta: 9,
 };
 
-const ListingsMaps = ({listings} : Props ) => {
-  return (
+const ListingsMap = memo(({ listings }: Props) => {
+  const router = useRouter();
+  const mapRef = useRef<any>(null);
 
-    <View style={defaultStyles.container}>
-    <MapView style={StyleSheet.absoluteFill} 
-     provider={PROVIDER_GOOGLE}
-    showsUserLocation={true}
-     showsMyLocationButton 
-     initialRegion={INITIAL_REGION}
-     >
-      {listings.features.map((item: ListingGeo)=> (
-        <Marker 
-        key={item.properties.id}
-        onPress={() => onMarkerSelected(item)}
+  // When the component mounts, locate the user
+  useEffect(() => {
+    onLocateMe();
+  }, []);
+
+  // When a marker is selected, navigate to the listing page
+  const onMarkerSelected = (event: any) => {
+    router.push(`/listing/${event.properties.id}`);
+  };
+
+  // Focus the map on the user's location
+  const onLocateMe = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+
+    const region = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 7,
+      longitudeDelta: 7,
+    };
+
+    mapRef.current?.animateToRegion(region);
+  };
+
+  // Overwrite the renderCluster function to customize the cluster markers
+  const renderCluster = (cluster: any) => {
+    const { id, geometry, onPress, properties } = cluster;
+
+    const points = properties.point_count;
+    return (
+      <Marker
+        key={`cluster-${id}`}
         coordinate={{
-          latitude:+ item.properties.latitude,
-          longitude :+ item.properties.longitude,
+          longitude: geometry.coordinates[0],
+          latitude: geometry.coordinates[1],
+        }}
+        onPress={onPress}>
+        <View style={styles.marker}>
+          <Text
+            style={{
+              color: '#000',
+              textAlign: 'center',
+              fontFamily: 'mon-sb',
+            }}>
+            {points}
+          </Text>
+        </View>
+      </Marker>
+    );
+  };
 
-        }} />
-      ))}
-     </MapView>     
-  </View>
-  )
-}
+  return (
+    <View style={defaultStyles.container}>
+      <MapView
+        ref={mapRef}
+        animationEnabled={false}
+        style={StyleSheet.absoluteFillObject}
+        initialRegion={INITIAL_REGION}
+        clusterColor="#fff"
+        clusterTextColor="#000"
+        clusterFontFamily="mon-sb"
+        renderCluster={renderCluster}>
+        {/* Render all our marker as usual */}
+        {listings.features.map((item: any) => (
+          <Marker
+            coordinate={{
+              latitude: item.properties.latitude,
+              longitude: item.properties.longitude,
+            }}
+            key={item.properties.id}
+            onPress={() => onMarkerSelected(item)}>
+            <View style={styles.marker}>
+              <Text style={styles.markerText}>€ {item.properties.price}</Text>
+            </View>
+          </Marker>
+        ))}
+      </MapView>
+      <TouchableOpacity style={styles.locateBtn} onPress={onLocateMe}>
+        <Ionicons name="navigate" size={24} color={Colors.dark} />
+      </TouchableOpacity>
+    </View>
+  );
+});
+
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
+  container: {
+    flex: 1,
+  },
+  marker: {
+    padding: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    elevation: 5,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: {
+      width: 1,
+      height: 10,
     },
-    marker: {
-      padding: 8,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#fff',
-      elevation: 5,
-      borderRadius: 12,
-      shadowColor: '#000',
-      shadowOpacity: 0.1,
-      shadowRadius: 6,
-      shadowOffset: {
-        width: 1,
-        height: 10,
-      },
+  },
+  markerText: {
+    fontSize: 14,
+    fontFamily: 'mon-sb',
+  },
+  locateBtn: {
+    position: 'absolute',
+    top: 70,
+    right: 20,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: {
+      width: 1,
+      height: 10,
     },
-    markerText: {
-      fontSize: 14,
-      fontFamily: 'mon-sb',
-    },
-    locateBtn: {
-      position: 'absolute',
-      top: 70,
-      right: 20,
-      backgroundColor: '#fff',
-      padding: 10,
-      borderRadius: 10,
-      elevation: 2,
-      shadowColor: '#000',
-      shadowOpacity: 0.1,
-      shadowRadius: 6,
-      shadowOffset: {
-        width: 1,
-        height: 10,
-      },
-     
-    },
+  },
+});
 
-    // map: {
-    //     width: '100%',
-    //     height: '100%',
-    //  }
-  });
-  
-  export default ListingsMaps;
+export default ListingsMap;

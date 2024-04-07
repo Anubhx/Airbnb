@@ -23,8 +23,8 @@ const page = () => {
           header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
         }}
       />
-      <Listings listings={items} category={category} /> 
-      {/* <ListingsMaps listings={listingsDataGeo} /> */}
+      {/* <Listings listings={items} category={category} />  */}
+      <ListingsMaps listings={listingsDataGeo} />
       {/* <ListingsMap  listings ={listingsDataGeo}/> Add the ListingsMap component */}
     </View>
   );
