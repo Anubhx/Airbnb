@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontDisplay, processFontFamily } from 'expo-font';
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 import Colors from '@/constants/Colors';
+import ListingsMap from './ListingsMaps';
 
 interface ListingItem {
     name: string;
@@ -15,12 +16,16 @@ interface ListingItem {
     review_scores_rating : number;
     room_type: string;
     price: number;
+    number_of_reviews: number;
+    
     // Assuming each ListingItem has an image property
 }
 
 interface Props {
     listings: ListingItem[];
     category: string;
+    refresh : boolean;
+
 }
 
 const Listings = ({ listings: items, category }: Props) => {
@@ -38,8 +43,8 @@ const Listings = ({ listings: items, category }: Props) => {
 
     const renderRow: ListRenderItem<ListingItem> = ({ item }) => (
       
-        <Link href={`/listing/${item.id}`} asChild>
-       
+        <><Link href={`/listing/${item.id}`} asChild>
+
         <TouchableOpacity>
           <Animated.View style={styles.listing} entering={FadeInRight} exiting={FadeOutLeft}>
             <Animated.Image source={{ uri: item.medium_url }} style={styles.image} />
@@ -58,11 +63,20 @@ const Listings = ({ listings: items, category }: Props) => {
               <Text style={{ fontFamily: 'mon-sb' }}>€ {item.price}</Text>
               <Text style={{ fontFamily: 'mon' }}>night</Text>
             </View>
+
           </Animated.View>
+
 
         </TouchableOpacity>
 
       </Link>
+      {/* <View style= {styles.btn}>
+          <TouchableOpacity onPress={ListingsMap} style={styles.btn}>
+            <Text>Map </Text>
+            <Ionicons name="map" size={20} color="#000" />
+          </TouchableOpacity>
+        </View> */}
+        </>
       
     );
 
@@ -85,6 +99,17 @@ const styles = StyleSheet.create({
         marginVertical :16,
        // paddingBottom: 0,
     },
+    btn: {
+      backgroundColor: '#fff',
+      padding: 14,
+      alignContent: 'center',
+      fontSize: 16,
+      height: 50,
+      borderRadius: 30,
+      flexDirection: 'row',
+      marginHorizontal: 'auto',
+      alignItems: 'center',
+   },
     image: {
         width: '100%',
         height: 300,

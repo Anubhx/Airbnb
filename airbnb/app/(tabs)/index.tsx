@@ -21,22 +21,24 @@ const styles = StyleSheet.create({
 const page = () => {
   const items = useMemo(() => listingsData as any, []);
   const [category, setCategory] = useState<string>('Tiny homes');
+  const getoItems = useMemo(() => listingsDataGeo, []);
   
   
     const onDataChanged = (category: string) => {
       setCategory(category);
     };
   return (
-    <View style={{ flex: 1, marginTop : 130 }}>
-      <Stack.Screen
-        options={{
-          header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
-        }}
-      />
+    <View style={{ flex: 1, marginTop: 80 }}>
+    {/* Define pour custom header */}
+    <Stack.Screen
+      options={{
+        header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
+      }}
+    />
      
-      <Listings listings={items} category={category} /> 
+      <Listings listings={items} category={category} refresh={false} /> 
       {/* <ListingsMaps listings={listingsDataGeo} /> */}
-      {/* <ListingsBottomSheet listings={items} category={category} /> */}
+      <ListingsBottomSheet listings={items} category={category} />
     </View>
   );
 };
