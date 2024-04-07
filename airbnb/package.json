@@ -17,6 +17,7 @@
     "@clerk/shared": "^1.4.0",
     "@expo/vector-icons": "^14.0.0",
     "@react-navigation/native": "^6.0.2",
+    "axios": "^1.6.8",
     "expo": "~50.0.14",
     "expo-font": "~11.10.3",
     "expo-haptics": "~12.8.1",
