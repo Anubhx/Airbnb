@@ -16,6 +16,7 @@
     "@clerk/clerk-expo": "^0.20.12",
     "@clerk/shared": "^1.4.0",
     "@expo/vector-icons": "^14.0.0",
+    "@gorhom/bottom-sheet": "^4.6.1",
     "@react-navigation/native": "^6.0.2",
     "expo": "~50.0.14",
     "expo-font": "~11.10.3",
