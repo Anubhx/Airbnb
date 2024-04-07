@@ -1,8 +1,10 @@
-import { Button, TextInput, View, StyleSheet } from "react-native";
+import { Button, TextInput, View, StyleSheet, Alert } from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useState } from "react";
 import { Stack } from "expo-router";
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 const Register = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -12,32 +14,59 @@ const Register = () => {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigation =useNavigation();
+
+  function handleRegister() {
+    const user={
+      email: emailAddress,
+      password
+    }
+    axios
+      .post("http://10.0.2.2:3000/register", user)
+      .then((response) => {
+        console.log(response);
+        Alert.alert(
+          "Registration successful",
+          "you have been registered successfully"
+        );
+        setEmailAddress("");
+        setPassword("");
+        navigation.navigate('profile');
+      })
+      .catch((error) => {
+        Alert.alert(
+          "Registration failed",
+          "An error occurred during registration"
+        );
+        console.log("error", error);
+      });
+  }
 
   // Create the user and send the verification email
-  const onSignUpPress = async () => {
-    if (!isLoaded) {
-      return;
-    }
-    setLoading(true);
+  // const onSignUpPress = async () => {
+  //   if (!isLoaded) {
+  //     return;
+  //   }
+  //   setLoading(true);
 
-    try {
-      // Create the user on Clerk
-      await signUp.create({
-        emailAddress,
-        password,
-      });
+  //   try {
+  //     // Create the user on Clerk
+  //     await signUp.create({
+  //       emailAddress,
+  //       password,
+  //     });
 
-      // Send verification Email
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+  //     // Send verification Email
+  //     await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
 
-      // change the UI to verify the email address
-      setPendingVerification(true);
-    } catch (err: any) {
-      alert(err.errors[0].message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     // change the UI to verify the email address
+  //     setPendingVerification(true);
+  //   } catch (err: any) {
+  //     alert(err.errors[0].message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // Verify the email address
   const onPressVerify = async () => {
@@ -82,7 +111,7 @@ const Register = () => {
           />
 
           <Button
-            onPress={onSignUpPress}
+            onPress={handleRegister}
             title="Sign up"
             color={"#6c47ff"}
           ></Button>

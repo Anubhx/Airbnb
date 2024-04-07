@@ -1,4 +1,6 @@
 import { useSignIn } from "@clerk/clerk-expo";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -18,26 +20,43 @@ const Login = () => {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const onSignInPress = async () => {
-    if (!isLoaded) {
-      return;
+  const navigation =useNavigation();
+  
+  function handleLogin() {
+    const user={
+      email: emailAddress,
+      password
     }
-    setLoading(true);
-    try {
-      const completeSignIn = await signIn.create({
-        identifier: emailAddress,
-        password,
+    axios
+      .post("http://10.0.2.2:3000/login", user)
+      .then((response) => {
+        // console.log(response.data.userId);
+        // dispatch(loginUser(response.data.userId));
+        // const token = response.data.token;
+        // console.log(token);
+
+        // AsyncStorage.setItem("authToken", token).then(r => navigation.navigate("logtodash"));
+        navigation.navigate("profile")
+      })
+      .catch((error) => {
+        Alert.alert("Login error");
+        console.log("error ", error);
       });
+  }
 
-      // This indicates the user is signed in
-      await setActive({ session: completeSignIn.createdSessionId });
-    } catch (err: any) {
-      alert(err.errors[0].message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const onSignInPress = async () => {
+  //   if (!isLoaded) {
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   try {
+      
+  //   } catch (err: any) {
+  //     alert(err.errors[0].message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -58,7 +77,7 @@ const Login = () => {
         style={styles.inputField}
       />
 
-      <Button onPress={onSignInPress} title="Login" color={"#6c47ff"}></Button>
+      <Button onPress={handleLogin} title="Login" color={"#6c47ff"}></Button>
 
       <Link href="/reset" asChild>
         <Pressable style={styles.button}>
