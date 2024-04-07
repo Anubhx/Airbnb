@@ -22,6 +22,7 @@ const Page = () => {
   const [firstName, setFirstName] = useState(user?.firstName);
   const [lastName, setLastName] = useState(user?.lastName);
   const [email, setEmail] = useState(user?.emailAddresses[0].emailAddress);
+  const [username, setUsername] = useState(user?.username);
   const [edit, setEdit] = useState(false);
 
   // Load user data on mount
@@ -32,6 +33,7 @@ const Page = () => {
 
     setFirstName(user.firstName);
     setLastName(user.lastName);
+    setUsername(user.username);
     setEmail(user.emailAddresses[0].emailAddress);
   }, [user]);
 
@@ -76,15 +78,18 @@ const Page = () => {
 
       {user && (
         <View style={styles.card}>
-          <TouchableOpacity onPress={onCaptureImage}>
+          <TouchableOpacity style={{alignContent : 'center'}} onPress={onCaptureImage}>
             <Image source={{ uri: user?.imageUrl }} style={styles.avatar} />
+            <Text style={{fontSize: 16 }} > {username && `(@${username})`}</Text>
           </TouchableOpacity>
           <View style={{ flexDirection: 'row', gap: 6 }}>
             {!edit && (
               <View style={styles.editRow}>
                 <Text style={{ fontFamily: 'mon-b', fontSize: 22 }}>
-                  {firstName} {lastName}
+                  {firstName} {lastName} 
+                 
                 </Text>
+                {/* <Text style={{fontSize: 16 }} > {username && `(@${username})`}</Text> */}
                 <TouchableOpacity onPress={() => setEdit(true)}>
                   <Ionicons name="create-outline" size={24} color={Colors.dark} />
                 </TouchableOpacity>
@@ -104,6 +109,7 @@ const Page = () => {
                   onChangeText={setLastName}
                   style={[defaultStyles.inputField, { width: 100 }]}
                 />
+                
                 <TouchableOpacity onPress={onSaveUser}>
                   <Ionicons name="checkmark-outline" size={24} color={Colors.dark} />
                 </TouchableOpacity>
@@ -115,10 +121,10 @@ const Page = () => {
         </View>
       )}
 
-      {isSignedIn && <Button title="Log Out" onPress={() => signOut()} color={Colors.dark} />}
+      {isSignedIn && <Button title="Log Out" onPress={() => signOut()} color={'red'} />}
       {!isSignedIn && (
         <Link href={'/(modals)/login'} asChild>
-          <Button title="Log In" color={Colors.dark} />
+          <Button title="Log In" color={'blue'} />
         </Link>
       )}
     </SafeAreaView>
